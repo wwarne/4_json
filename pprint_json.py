@@ -6,11 +6,8 @@ def load_data(filepath):
     try:
         with open(filepath, encoding='utf-8') as f:
             return json.load(f)
-    except OSError:
-        print('Can\'t open the file `{}`'.format(filepath))
-    except json.JSONDecodeError:
-        print('Can\'t decode content of the file `{}`. Please check the file').format(filepath)
-    sys.exit(1)
+    except (OSError, json.JSONDecodeError):
+        return
 
 
 def pretty_print_json(data):
@@ -21,4 +18,9 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         print('Usage: python pprint_json.py <path to file>')
         sys.exit(1)
-    pretty_print_json(load_data(sys.argv[1]))
+    json_data = load_data(sys.argv[1])
+    if not json_data:
+        print('Can\'t load the file {}'.format(sys.argv[1]))
+        sys.exit(1)
+    else:
+        pretty_print_json(json_data)
